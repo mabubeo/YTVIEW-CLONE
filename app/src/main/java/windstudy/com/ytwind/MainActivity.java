@@ -40,6 +40,7 @@ import windstudy.com.ytwind.model.Version;
 import windstudy.com.ytwind.service.DownloadService;
 import windstudy.com.ytwind.service.HourHeaderService;
 import windstudy.com.ytwind.service.NewHeaderService3G;
+import windstudy.com.ytwind.service.SubViewHeaderService;
 import windstudy.com.ytwind.util.Config;
 import windstudy.com.ytwind.util.LoadingDialog;
 import windstudy.com.ytwind.util.PrefUtils;
@@ -57,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
     EditText edtNameFixed, edtViewCount, edtAccountNum;
     TextView tvName, tvStatus, tvVersion, tvRoot;
 
-    Intent intent, intentNew, intentHour;
+    Intent intent, intentSubViewWifi, intentHour;
     boolean isRooted;
 
 
@@ -89,9 +90,9 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, "onCreate: unroot");
         }
 
-        if(Utils.isTablet(this)){
+        if (Utils.isTablet(this)) {
             Log.d(TAG, "onCreate: tablet");
-        }else{
+        } else {
             Log.d(TAG, "onCreate: not tablet");
         }
 
@@ -107,6 +108,7 @@ public class MainActivity extends AppCompatActivity {
         intent = new Intent(MainActivity.this, NewHeaderService3G.class);
 //        intentNew = new Intent(MainActivity.this, HeaderServiceNewHMA.getInstance().getClass());
         intentHour = new Intent(MainActivity.this, HourHeaderService.class);
+        intentSubViewWifi = new Intent(MainActivity.this, SubViewHeaderService.class);
 
         tvName.setText(PrefUtils.getName(MainActivity.this));
         edtAccountNum.setText(PrefUtils.getAccountNum(MainActivity.this) + "");
@@ -195,8 +197,42 @@ public class MainActivity extends AppCompatActivity {
             } else if (type == Config.TYPE_HOUR) {
                 Log.d(TAG, "handleIntent: type hour");
                 startViewHour();
+            }  else if (type == Config.TYPE_WIFI) {
+                Log.d(TAG, "handleIntent: type wifi");
+                startSubViewWifi(true);
             }
         }
+    }
+
+    private void startSubViewWifi(boolean isAutoRestart) {
+
+        if (!isRooted) {
+            Toast.makeText(this, "Thiết bị chưa được root.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (PrefUtils.getName(MainActivity.this) != "" && PrefUtils.getViewCount(MainActivity.this) != 0 && PrefUtils.getAccountNum(MainActivity.this) != 0) {
+            stopService(intentSubViewWifi);
+            PrefUtils.saveType(this, Config.TYPE_WIFI);
+            Toast.makeText(MainActivity.this, "Vui lòng đợi...", Toast.LENGTH_LONG).show();
+            //trường hợp k phải do crash khởi động lại -> reset status
+            if (!isAutoRestart) {
+                Utils.saveRunningStatus(MainActivity.this, 0, 0);
+            }
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+//                    intent.putExtra(Config.IS_3G_ROOT, isRooted);
+                    startService(intentSubViewWifi);
+                }
+            }, 2000); //thời gian đợi fb xóa dl cũ nếu cập nhật tên máy
+
+        } else {
+            Toast.makeText(MainActivity.this, "Cần cấu hình dầy đủ thông tin", Toast.LENGTH_SHORT).show();
+        }
+
+
     }
 
     private void startView3G(boolean isAutoRestart) {
@@ -437,6 +473,7 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         stopService(intent);
         stopService(intentHour);
+        stopService(intentSubViewWifi);
     }
 
     private void setMobileDataEnabled(Context context, boolean enabled) {

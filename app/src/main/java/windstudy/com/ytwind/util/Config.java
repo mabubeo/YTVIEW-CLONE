@@ -13,6 +13,7 @@ public class Config {
 
     public final static int TYPE_3G = 0;
     public final static int TYPE_HOUR = 1;
+    public final static int TYPE_WIFI = 1;
 
     public final static int TYPE_VIEW = 0;
     public final static int TYPE_SUBCRIBE = 1;
