@@ -89,7 +89,7 @@ public class SubViewHeaderService extends Service {
             public void uncaughtException(Thread paramThread, Throwable paramThrowable) {
                 //Do your own error handling here
                 Log.d("Alert", "Lets See if it Works 3g !!!");
-                Utils.saveErrorLog(SubViewHeaderService.this, "3G: " + paramThrowable.getMessage());
+                Utils.saveErrorLog(SubViewHeaderService.this, "Wifi: " + paramThrowable.getMessage());
                 Utils.saveRunningStatus(SubViewHeaderService.this, currentCampaignIndex, currentLinkIndex);
                 stopSelf();
                 Utils.restartApp(SubViewHeaderService.this, PrefUtils.getType(SubViewHeaderService.this));
