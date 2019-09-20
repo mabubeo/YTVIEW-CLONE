@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Wind View</string>
+    <string name="uri_scheme_des">YTView</string>
+    <string name="uri_scheme_des_2">WindYT</string>
+
+    <string name="SUBSCRIBED_VIE">ĐÃ ĐĂNG KÝ</string>
+    <string name="SUBSCRIBED_ENG">SUBSCRIBED</string>
+
+    <string name="NOT_SUBSCRIBE_VIE">ĐĂNG KÝ</string>
+    <string name="NOT_SUBSCRIBE_ENG">SUBSCRIBE</string>
+
+    <string name="PLAY_VIDEO_VIE">Phát video</string>
+    <string name="PLAY_VIDEO_ENG">Play video</string>
+
+</resources>
